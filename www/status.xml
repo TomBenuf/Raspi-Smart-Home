@@ -1,0 +1,16 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt
+     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi 2018-11-04
+
+     Dies ist die XML Status Datei. -->
+
+<devices>
+	<device id = "01">
+		<name>Lampe 1</name>
+		<type>LED</type>
+		<signal>
+			<pin1>1</pin1>
+		</signal>
+		<status>on</status>
+	</device>
+</devices>
