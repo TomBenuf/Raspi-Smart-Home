@@ -9,8 +9,17 @@
 		<name>Lampe 1</name>
 		<type>LED</type>
 		<signal>
-			<pin1>1</pin1>
+			<pin>1</pin>
 		</signal>
 		<status>on</status>
+	</device>
+	<device id = "02">
+		<name>Motor 1</name>
+		<type>Motor</type>
+		<signal>
+			<pin>2</pin>
+			<pin>3</pin>
+		</signal>
+		<status>off</status>
 	</device>
 </devices>
