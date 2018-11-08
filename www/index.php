@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-03
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-08
    - Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
    - Dies ist die INDEX HTML-Datei. -->
