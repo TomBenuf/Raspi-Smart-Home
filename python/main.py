@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-05
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-12
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
@@ -11,6 +11,8 @@ import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
 
 GPIO.setmode(GPIO.BCM)
+
+pinlock = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False] 
 
 def loadxml(url) :
 
@@ -77,9 +79,26 @@ def main() :
 
             for pin in dev.signal :
 
-                int(pin)
-                exec('GPIO.setup(' + pin + ', GPIO.OUT)')
-                exec('GPIO.output(' + pin + ', GPIO.HIGH)')
+                pin = int(pin)
+
+                if pinlock[pin] == False :
+
+                    #nur wenn pinlock für pin nicht gesetzt (pin schon an)
+
+                    GPIO.setup(pin, GPIO.OUT)
+                    GPIO.output(pin, GPIO.HIGH)
+                    pinlock[pin] = True
+
+        elif dev.status == 'off' :
+
+            #Schalte in signal bestimmte pins auf OFF wenn off in status
+
+            for pin in dev.signal :
+
+                pin = int(pin)
+                GPIO.setup(pin, GPIO.OUT)
+                GPIO.output(pin, GPIO.LOW)
+                pinlock[pin] = False
 
 #Wiederhole main() solange das Programm läuft und warte immer 0.5s
 
