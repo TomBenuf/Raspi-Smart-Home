@@ -2,3 +2,13 @@
  * Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
  * Dies ist die Haupt CSS-Datei. */
+ body{
+	 background-color:#ff60fc;
+	 font-size:0.7cm;
+	 
+ }
+ h1{
+	 color:#d5a13c;
+	 font-size:1.1cm;
+	 text-decoration:underline;
+ }

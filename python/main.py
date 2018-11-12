@@ -65,11 +65,11 @@ def loadxml(url) :
 
         num = num + 1
 
-def main() :
+while 1:
 
-    #Python Hauptprogramm
+    #Python Hauptprogramm wiederhole für immer
 
-    loadxml('../www/status.xml')
+    loadxml('/var/www/html/status.xml')
 
     for dev in devs :
 
@@ -100,8 +100,4 @@ def main() :
                 GPIO.output(pin, GPIO.LOW)
                 pinlock[pin] = False
 
-#Wiederhole main() solange das Programm läuft und warte immer 0.5s
-
-while 1 :
-    main()
-    time.sleep(0.5)
+        time.sleep(0.5)
