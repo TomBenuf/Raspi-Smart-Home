@@ -6,15 +6,18 @@
 
     Dies ist der Python3 Backend script.'''
 
+import time
 import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
 
-def main() :
+GPIO.setmode(GPIO.BCM)
+
+def loadxml(url) :
 
     #lade XML erstelle Klasse dev[ZAHL] mit Attributen
     #.id .name .type .signal .status wie im xml
 
-    xml = et.parse('../www/status.xml')
+    xml = et.parse(url)
     root = xml.getroot()
 
     class devices :
@@ -34,32 +37,52 @@ def main() :
         def setsignal(self, signal) :
             self.signal = signal
 
-    dev = []
+    global devs
+
+    devs = []
     num = 0
 
     for device in list(root) :
 
         sig = []
-        dev.append(devices(device.get('id')))
+        devs.append(devices(device.get('id')))
 
         for name in device.iter('name') :
-            dev[num].setname(name.text)
+            devs[num].setname(name.text)
 
         for status in device.iter('status') :
-            dev[num].setstatus(status.text)
+            devs[num].setstatus(status.text)
 
         for type in device.iter('type') :
-            dev[num].settype(type.text)
+            devs[num].settype(type.text)
 
         for signal in device.iter('signal') :
             for pin in signal.iter('pin') :
                 sig.append(pin.text)
-            dev[num].setsignal(sig)
+            devs[num].setsignal(sig)
 
         num = num + 1
 
-    #Das ist nur eine Testanzeige ob alles korrekt aus dem xml geladen wird
+def main() :
 
-    print(dev[0].id, dev[0].name, dev[0].type, dev[0].signal, dev[0].status)
-    print(dev[1].id, dev[1].name, dev[1].type, dev[1].signal, dev[1].status)
-main()
+    #Python Hauptprogramm
+
+    loadxml('../www/status.xml')
+
+    for dev in devs :
+
+        if dev.status == 'on' :
+
+            #Schalte in signal bestimmte pins auf ON wenn on in status
+
+            for pin in dev.signal :
+
+                int(pin)
+                exec('GPIO.setup(' + pin + ', GPIO.OUT)')
+                exec('GPIO.output(' + pin + ', GPIO.HIGH)')
+
+#Wiederhole main() solange das Programm läuft und warte immer 0.5s
+
+while 1 :
+    main()
+    time.sleep(0.5)

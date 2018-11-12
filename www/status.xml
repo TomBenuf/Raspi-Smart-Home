@@ -9,7 +9,7 @@
 		<name>Lampe 1</name>
 		<type>LED</type>
 		<signal>
-			<pin>1</pin>
+			<pin>17</pin>
 		</signal>
 		<status>on</status>
 	</device>
@@ -17,8 +17,8 @@
 		<name>Motor 1</name>
 		<type>Motor</type>
 		<signal>
-			<pin>2</pin>
 			<pin>3</pin>
+			<pin>4</pin>
 		</signal>
 		<status>off</status>
 	</device>
