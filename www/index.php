@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-08
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-13
    - Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
    - Dies ist die INDEX HTML-Datei. -->
@@ -31,13 +31,13 @@ foreach ($xml->device as $device){
 	echo "<input type='button' value=".$device->name.">";
 	}
 	echo "<input type='button' name='ferstellen' value='Erstellen' onClick=1>";
-	if($_POST['ferstellen']=1)
-	{echo "<input type='text' name='fneuname'>
-	       <input type='password' name='fpass'>";
-		   $neuname=$_POST['fneuname'];
-		   $pass=$_POST['fpass'];  
-		}
-	if($pass="")
+	if($_POST['ferstellen']=1){
+		echo "<input type='text' name='fneuname'>
+		<input type='password' name='fpassw'>";
+		$neuname=$_POST['fneuname'];
+		$passw=$_POST['fpassw'];  
+	}
+	if($passw="")
 	{echo"<input type='button' value='$neuname'>";
 		
 	}		
