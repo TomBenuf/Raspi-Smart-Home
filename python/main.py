@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-12
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-19
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
@@ -10,34 +10,43 @@ import time
 import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
 
-GPIO.setmode(GPIO.BCM)
+#erstelle Klasse um XML Daten zu Laden
 
-pinlock = [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False] 
+class devices :
+
+    def __init__(self, number) :
+        self.id = number
+
+    def setname(self, name) :
+        self.name = name
+
+    def setstatus(self, status) :
+        self.status = status
+
+    def settype(self, type) :
+        self.type = type
+
+    def setsignal(self, signal) :
+        self.signal = signal
+
+#Setzte GPIO Nummerierung auf Broadcom
+#Dauer 1 an  pin21
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(21, GPIO.OUT)
+GPIO.output(21, GPIO.HIGH)
+
+
+pinlock = [False]*28
 
 def loadxml(url) :
 
-    #lade XML erstelle Klasse dev[ZAHL] mit Attributen
+    #lade XML, erstelle Liste mit Klassenattributen von devices
     #.id .name .type .signal .status wie im xml
 
     xml = et.parse(url)
     root = xml.getroot()
 
-    class devices :
-
-        def __init__(self, number) :
-            self.id = number
-
-        def setname(self, name) :
-            self.name = name
-
-        def setstatus(self, status) :
-            self.status = status
-
-        def settype(self, type) :
-            self.type = type
-
-        def setsignal(self, signal) :
-            self.signal = signal
 
     global devs
 
@@ -65,7 +74,7 @@ def loadxml(url) :
 
         num = num + 1
 
-while 1:
+while 1 :
 
     #Python Hauptprogramm wiederhole für immer
 
@@ -83,21 +92,26 @@ while 1:
 
                 if pinlock[pin] == False :
 
-                    #nur wenn pinlock für pin nicht gesetzt (pin schon an)
+                    #nur wenn pinlock für pin nicht gesetzt (pin schon 0)
 
                     GPIO.setup(pin, GPIO.OUT)
-                    GPIO.output(pin, GPIO.HIGH)
+                    GPIO.output(pin, GPIO.LOW)
                     pinlock[pin] = True
 
         elif dev.status == 'off' :
 
-            #Schalte in signal bestimmte pins auf OFF wenn off in status
+            #Schalte in signal bestimmte pins auf 1 wenn off in status
 
             for pin in dev.signal :
 
                 pin = int(pin)
-                GPIO.setup(pin, GPIO.OUT)
-                GPIO.output(pin, GPIO.LOW)
-                pinlock[pin] = False
+            
+                if pinlock[pin] == True :
+                
+                    #nur wenn pinlock für pin noch gesetzt
+
+                    GPIO.setup(pin, GPIO.OUT)
+                    GPIO.output(pin, GPIO.HIGH)
+                    pinlock[pin] = False
 
         time.sleep(0.5)

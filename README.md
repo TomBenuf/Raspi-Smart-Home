@@ -1,4 +1,4 @@
-Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-14
+Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-19
 Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
 ---------------------- RASPI-SMART-HOME-README ----------------------------
@@ -15,7 +15,8 @@ Unser Projekt entsteht im Rahmen eines Schulprojekts am BSZ Pirna.
 Es gibt der Übersichtlichkeit wegen zwei Ordner. Einen für Python Backend
 den anderen für HTML/PHP/CSS Frontend. Der main.py Script liest aus
 der status.xml und gibt an die in <signal> festgelegten GPIO Pins das
-in <status> bestimmte Signal (an/aus). Dieser Script wird auf der Raspberry
+in <status> bestimmte Signal (an/aus). Außerdem wird der GPIO Pin 16 beim
+Start angeschaltet. Dieser Script wird auf der Raspberry
 Pi dank Cronjob immer ausgeführt.
 Die index.php lässt den Nutzer, solange er im Heimnetzwerk ist, das Smart-
 Home System steuern. Es gibt nach Eingabe eines Passworts ein Menü um
@@ -23,11 +24,15 @@ die Namen und Reihenfolge der Schaltflächen auf der Website zu verändern.
 Wenn Schaltflächen oder Namen geändert werden wird dies in status.xml
 geschrieben so dass main.py die entsprechende Aktion ausführt.
 Auch Personalisierung im Webinterface wird in der status.xml gespeichert
-so dass es auch beim nächsten Aufruf geladen wird.
+so dass es auch beim nächsten Aufruf geladen wird. Es gibt eine
+default_status.xml die geladen wird sollte status.xml fehlen oder
+ein REset gewünscht sein.
 
 Alles weitere wird von einer Schaltung gelöst die, wenn die GPIO pins
 geschalten werden, mit einem Tyristor 220V Wechselspannung schaltet und
 eine Status LED zum Leuchten bringt.
+Der Permanent Spannungsführende Pin soll mit einer LED signalisieren,
+dass die Raspi aus ist oder der main.py Script nicht läuft.
 Schaltpläne etc. werden nicht auf GitHub veröffentlicht.
 
 Wer Interesse an weiteren Informationen oder Schaltplänen hat
