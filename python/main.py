@@ -23,9 +23,6 @@ class devices :
     def setstatus(self, status) :
         self.status = status
 
-    def settype(self, type) :
-        self.type = type
-
     def setsignal(self, signal) :
         self.signal = signal
 
@@ -63,9 +60,6 @@ def loadxml(url) :
 
         for status in device.iter('status') :
             devs[num].setstatus(status.text)
-
-        for type in device.iter('type') :
-            devs[num].settype(type.text)
 
         for signal in device.iter('signal') :
             for pin in signal.iter('pin') :
