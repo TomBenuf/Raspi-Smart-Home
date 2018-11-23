@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-13
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-23
    - Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
    - Dies ist die INDEX HTML-Datei. -->
@@ -15,10 +15,9 @@ Raspi SmartHome
 
 </head>
 <body>
-	<p>
-	Ihre Smart-Home Steuerung für unterwegs.</p>
+	<p> <h1>Ihre Smart-Home Steuerung für unterwegs.</h1> </p>
 <?php
-     
+
 
 /* Läd XML und erstellt für jedes /devices/device einen Button.
  * Bis jetzt aber noch ohne Aktion */
@@ -27,23 +26,28 @@ Raspi SmartHome
  $xml = simplexml_load_file('status.xml');
 
 echo "<form action='' method='POST'>";
-foreach ($xml->device as $device){
-	echo "<input type='button' value=".$device->name.">";
-	}
-	echo "<input type='button' name='ferstellen' value='Erstellen' onClick=1>";
-	if($_POST['ferstellen']=1){
-		echo "<input type='text' name='fneuname'>
-		<input type='password' name='fpassw'>";
-		$neuname=$_POST['fneuname'];
-		$passw=$_POST['fpassw'];  
-	}
-	if($passw="")
-	{echo"<input type='button' value='$neuname'>";
-		
-	}		
-echo "</form>";
+	echo "<input type='text' name='fanfz' value=".$_POST['fanfz'].">";
+	echo "<input type='text' name='fendz' value=".$_POST['fendz'].">";
+	$anfz=$_POST['fanfz'];
+	$endz=$_POST['fendz'];
+	foreach ($xml->device as $device)
+		{
+		echo "<input type='button' value=".$device->name."id='button1' name='f".$device->name."'onclick='1'>";
+		//$_POST['f'.$device->name.''];
 
+			If($_POST['f'.$device->name.'']==1)
+			{$device->name=$_POST['f'.$device->name.''];
+			}
+		}
+$daten='$device->name'.'$anfz'.'$endz';
+echo "</form>";
+$send=fopen('status.xml');
+fwrite($send,$daten);
+fclose($send);
 ?>
+<form action="settings.php" target="_self">
+<input type="submit" value="Einstellungen">
+</form>
 
 
 

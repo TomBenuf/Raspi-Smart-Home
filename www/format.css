@@ -1,16 +1,37 @@
-/* Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-13
+/* Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-23
  * Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
- * Dies ist die Haupt CSS-Datei. */
+ * Dies ist die Haupt CSS-Datei. *
+ *https://www.w3schools.com/csS/css3_buttons.asp*/
  
-body{
-	 background-color:#ff60fc;
-	 font-size:0.7cm;
+body{background-color:#ff60fc;
+	font-size:0.7cm;
 	 
 }
 
-h1{
-	 color:#d5a13c;
-	 font-size:1.1cm;
-	 text-decoration:underline;
+h1{color:#d5a13c;
+	font-size:1.1cm;
+	text-decoration:underline;
 }
+
+#button1{background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
+
+#button2{background-color: #4CAF50; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	border-radius: 12px;
+}
+
