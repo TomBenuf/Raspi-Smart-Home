@@ -1,0 +1,85 @@
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt
+     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
+
+     Dies ist die XML Status Datei. -->
+
+<devices>
+	<device id="01">
+		<name>Gerät 1</name>
+		<signal>
+			<pin>5</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="02">
+		<name>Gerät 2</name>
+		<signal>
+			<pin>6</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="03">
+		<name>Gerät 3</name>
+		<signal>
+			<pin>13</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="04">
+		<name>Gerät 4</name>
+		<signal>
+			<pin>19</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="05">
+		<name>Gerät 5</name>
+		<signal>
+			<pin>26</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="06">
+		<name>Gerät 6</name>
+		<signal>
+			<pin>16</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+	<device id="07">
+		<name>Gerät 7</name>
+		<signal>
+			<pin>20</pin>
+		</signal>
+		<status>on</status>
+		<timer>
+			<on>0</on>
+			<off>0</off>
+		</timer>
+	</device>
+</devices>

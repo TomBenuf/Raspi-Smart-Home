@@ -32,6 +32,7 @@ class devices :
 #Setzte GPIO Nummerierung auf Broadcom
 #Dauer 1 an  pin21
 
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.OUT)
 GPIO.output(21, GPIO.HIGH)
@@ -45,11 +46,11 @@ def loadxml(url) :
     #.id .name .type .signal .status wie im xml
 
     global xml
-    global xml1
+    global xml0
+    global root
     global devs
     
-    xml = et.parse(url)
-    xml1 = xml
+    xml = xml0 = et.parse(url)
     root = xml.getroot()
 
     devs = []
@@ -60,27 +61,33 @@ def loadxml(url) :
         sig = []
         timer = {'on' : 0,
                 'off' : 0}
+
         devs.append(devices(device.get('id')))
 
-        for name in device.iter('name') :
-            devs[num].setname(name.text)
+        devs[num].setname(device.find('name').text)
 
-        for status in device.iter('status') :
-            devs[num].setstatus(status.text)
+        devs[num].setstatus(device.find('status').text)
 
-        for signal in device.iter('signal') :
-            for pin in signal.iter('pin') :
+        for signal in device.findall('signal') :
+            for pin in signal.findall('pin') :
                 sig.append(pin.text)
             devs[num].setsignal(sig)
 
-        for timers in device.iter('timer') :
-            for on in timers.iter('on') :
-                timer['on'] = int(on.text)
-            for off in timers.iter('off') :
-                timer['off'] = int(off.text)
+        for timers in device.findall('timer') :
+            timer['on'] = int(timers.find('on').text)
+            timer['off'] = int(timers.find('off').text)
             devs[num].settimer(timer)
 
         num = num + 1
+
+def update_not_equal() :
+
+    #Vergleicht xml vor und nach dem Durchlauf. Speichert falls nicht gleich
+
+    #NOCH NICHT FERTIG
+
+    xml.write('/var/www/html/status.xml', encoding='utf-8', xml_declaration=True)
+    xml0.write('/var/www/html/status2.xml', encoding='utf-8', xml_declaration=True)
 
 while 1 :
 
@@ -90,13 +97,14 @@ while 1 :
 
     for dev in devs :
 
-        #Setzt den Gerätestatus auf on oder off wenn die Aktuelle Zeit größer als die in timer festgelegte und nicht 0 ist
+        #Setzt den Gerätestatus auf on oder off
+        #wenn die Aktuelle Zeit größer als die in Timer festgelegte und der Timer nicht 0 ist
 
-        if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 :
-            dev.status = 'on'
+        if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 and dev.status == 'off' :
+            exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'on'""")
 
-        if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 :
-            dev.status = 'off'
+        if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 and dev.status == 'on' :
+            exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'off'""")
 
         if dev.status == 'on' :
 
@@ -129,7 +137,7 @@ while 1 :
                     GPIO.setup(pin, GPIO.OUT)
                     GPIO.output(pin, GPIO.HIGH)
                     pinlock[pin] = False
-        if xml != xml1 : 
-           xml.write('/var/www/html/status.xml')
+        
+        update_not_equal()
 
         time.sleep(0.5)

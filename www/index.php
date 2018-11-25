@@ -8,7 +8,7 @@
 <head>
 
 <title>
-Raspi SmartHome
+Raspi Smar-tHome
 </title>
 <link rel="stylesheet" type="text/css" href="format.css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
