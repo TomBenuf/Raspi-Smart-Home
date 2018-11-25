@@ -26,6 +26,9 @@ class devices :
     def setsignal(self, signal) :
         self.signal = signal
 
+    def settimer(self, timer) :
+        self.timer = timer
+
 #Setzte GPIO Nummerierung auf Broadcom
 #Dauer 1 an  pin21
 
@@ -41,11 +44,13 @@ def loadxml(url) :
     #lade XML, erstelle Liste mit Klassenattributen von devices
     #.id .name .type .signal .status wie im xml
 
-    xml = et.parse(url)
-    root = xml.getroot()
-
-
+    global xml
+    global xml1
     global devs
+    
+    xml = et.parse(url)
+    xml1 = xml
+    root = xml.getroot()
 
     devs = []
     num = 0
@@ -53,6 +58,8 @@ def loadxml(url) :
     for device in list(root) :
 
         sig = []
+        timer = {'on' : 0,
+                'off' : 0}
         devs.append(devices(device.get('id')))
 
         for name in device.iter('name') :
@@ -66,15 +73,30 @@ def loadxml(url) :
                 sig.append(pin.text)
             devs[num].setsignal(sig)
 
+        for timers in device.iter('timer') :
+            for on in timers.iter('on') :
+                timer['on'] = int(on.text)
+            for off in timers.iter('off') :
+                timer['off'] = int(off.text)
+            devs[num].settimer(timer)
+
         num = num + 1
 
 while 1 :
 
     #Python Hauptprogramm wiederhole für immer
 
-    loadxml('/var/www/html/status.xml')
+    loadxml('/var/www/html/status.xml') 
 
     for dev in devs :
+
+        #Setzt den Gerätestatus auf on oder off wenn die Aktuelle Zeit größer als die in timer festgelegte und nicht 0 ist
+
+        if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 :
+            dev.status = 'on'
+
+        if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 :
+            dev.status = 'off'
 
         if dev.status == 'on' :
 
@@ -107,5 +129,7 @@ while 1 :
                     GPIO.setup(pin, GPIO.OUT)
                     GPIO.output(pin, GPIO.HIGH)
                     pinlock[pin] = False
+        if xml != xml1 : 
+           xml.write('/var/www/html/status.xml')
 
         time.sleep(0.5)
