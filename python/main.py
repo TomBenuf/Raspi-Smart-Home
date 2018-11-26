@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-19
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-26
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
@@ -43,20 +43,19 @@ pinlock = [False]*28
 def loadxml(url) :
 
     #lade XML, erstelle Liste mit Klassenattributen von devices
-    #.id .name .type .signal .status wie im xml
+    #.id .name .signal .status .timer wie im xml
 
     global xml
-    global xml0
     global root
     global devs
     
-    xml = xml0 = et.parse(url)
+    xml = et.parse(url)
     root = xml.getroot()
 
     devs = []
     num = 0
 
-    for device in list(root) :
+    for device in root.findall('device') :
 
         sig = []
         timer = {'on' : 0,
@@ -80,20 +79,12 @@ def loadxml(url) :
 
         num = num + 1
 
-def update_not_equal() :
-
-    #Vergleicht xml vor und nach dem Durchlauf. Speichert falls nicht gleich
-
-    #NOCH NICHT FERTIG
-
-    xml.write('/var/www/html/status.xml', encoding='utf-8', xml_declaration=True)
-    xml0.write('/var/www/html/status2.xml', encoding='utf-8', xml_declaration=True)
-
-while 1 :
+while True :
 
     #Python Hauptprogramm wiederhole für immer
 
-    loadxml('/var/www/html/status.xml') 
+    loadxml('/var/www/html/status.xml')
+    changed = False
 
     for dev in devs :
 
@@ -102,9 +93,11 @@ while 1 :
 
         if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 and dev.status == 'off' :
             exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'on'""")
+            changed = True
 
         if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 and dev.status == 'on' :
             exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'off'""")
+            changed = True
 
         if dev.status == 'on' :
 
@@ -138,6 +131,9 @@ while 1 :
                     GPIO.output(pin, GPIO.HIGH)
                     pinlock[pin] = False
         
-        update_not_equal()
-
-        time.sleep(0.5)
+    #wenn status geändert wurde speichere in Datei
+    
+    if changed :
+        xml.write('/var/www/html/status.xml', encoding = 'utf-8', xml_declaration = True)
+    
+    time.sleep(0.2)
