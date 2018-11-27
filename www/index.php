@@ -28,6 +28,7 @@ echo "<form action='' method='POST'>
 $anfz=$_POST['fanfz'];
 $endz=$_POST['fendz'];
 
+	//Erzeuge Checkbox für jedes Gerät
 	foreach ($xml->device as $device){
 	echo $device->name."<input type='checkbox' id='check' name='fcheck".$device['id']."'><br>";
 	}
@@ -35,6 +36,7 @@ $endz=$_POST['fendz'];
 echo "<input type='submit' value='ok'></form>";
 //print_r($_POST);
 
+	//Schreibt Werte die in Chekcboxen ausgewählt wurden in $xml
 	foreach($xml->device as $device1){
 	$indent = "fcheck".$device1['id'];
 	//echo $indent."&nbsp";
@@ -50,6 +52,8 @@ echo "<input type='submit' value='ok'></form>";
 		}
 	}
 
+//Speichert $xml in Datei
+file_put_contents('status.xml', $xml->asXML());
 //print_r($xml);
 ?>
 <form action="settings.php" target="_self">
