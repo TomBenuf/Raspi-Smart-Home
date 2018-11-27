@@ -8,7 +8,7 @@
 <head>
 
 <title>
-Raspi Smar-tHome
+Raspi Smart-Home
 </title>
 <link rel="stylesheet" type="text/css" href="format.css" />
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
@@ -17,33 +17,40 @@ Raspi Smar-tHome
 <body>
 	<p> <h1>Ihre Smart-Home Steuerung für unterwegs.</h1> </p>
 <?php
-
-
 /* Läd XML und erstellt für jedes /devices/device einen Button.
  * Bis jetzt aber noch ohne Aktion */
 
+$xml = simplexml_load_file('status.xml');
+echo "<form action='' method='POST'>
+	<input type='button' value='Urlaubsmdous' name='holiday' onclick='1'>
+	<input type='text' name='fanfz' value=".$_POST['fanfz'].">
+	<input type='text' name='fendz' value=".$_POST['fendz']."><p>";
+$anfz=$_POST['fanfz'];
+$endz=$_POST['fendz'];
 
- $xml = simplexml_load_file('status.xml');
+	foreach ($xml->device as $device){
+	echo $device->name."<input type='checkbox' id='check' name='fcheck".$device['id']."'><br>";
+	}
 
-echo "<form action='' method='POST'>";
-	echo "<input type='text' name='fanfz' value=".$_POST['fanfz'].">";
-	echo "<input type='text' name='fendz' value=".$_POST['fendz'].">";
-	$anfz=$_POST['fanfz'];
-	$endz=$_POST['fendz'];
-	foreach ($xml->device as $device)
-		{
-		echo "<input type='button' value=".$device->name."id='button1' name='f".$device->name."'onclick='1'>";
-		//$_POST['f'.$device->name.''];
+echo "<input type='submit' value='ok'></form>";
+//print_r($_POST);
 
-			If($_POST['f'.$device->name.'']==1)
-			{$device->name=$_POST['f'.$device->name.''];
-			}
+	foreach($xml->device as $device1){
+	$indent = "fcheck".$device1['id'];
+	//echo $indent."&nbsp";
+
+		If($_POST[$indent]){
+		$device1->status = 'on';
+		//echo $device1->name.$device1->status."<br>";
 		}
-$daten='$device->name'.'$anfz'.'$endz';
-echo "</form>";
-$send=fopen('status.xml');
-fwrite($send,$daten);
-fclose($send);
+
+		else{
+		$device1->status = 'off';
+		//echo $device1->name.$device1->status."<br>";
+		}
+	}
+
+//print_r($xml);
 ?>
 <form action="settings.php" target="_self">
 <input type="submit" value="Einstellungen">
