@@ -11,10 +11,10 @@
 	<Title>Einstellungen</title>
 </head>
 <body>
-	<h1>Einstellungen für Buttons</h1>
-	<form action="" method="POST">
+	<p> <h1>Einstellungen für Buttons</h1> </p>
+<form action="" method="POST">
 
-	</form>
+</form>
 
 <?php
 
@@ -24,8 +24,8 @@
 
 ?>
 
-	<form action="index.php" target="_self">
-	<input type="submit" value="Zurück">
+<form action="index.php" target="_self">
+	<input type="submit" value="Zurück" id="button">
 	</form>
 </body>
 </html>

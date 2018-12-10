@@ -11,6 +11,7 @@
 			<pin>5</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -22,6 +23,7 @@
 			<pin>6</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -33,6 +35,7 @@
 			<pin>13</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -44,6 +47,7 @@
 			<pin>19</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -55,6 +59,7 @@
 			<pin>26</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -66,6 +71,7 @@
 			<pin>16</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
@@ -77,10 +83,14 @@
 			<pin>20</pin>
 		</signal>
 		<status>off</status>
+		<holiday>off</holiday>
 		<timer>
 			<on>0</on>
 			<off>0</off>
 		</timer>
 	</device>
-	<holiday>off</holiday>
+	<holiday>
+		<status>off</status>
+		<interval>30</interval>
+	</holiday>
 </devices>
