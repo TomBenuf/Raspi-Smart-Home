@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-11-26
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-12
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
@@ -9,6 +9,8 @@
 import time
 import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
+from random import choice
+from operator import itemgetter
 
 #erstelle Klasse um XML Daten zu Laden
 
@@ -29,16 +31,25 @@ class devices :
     def settimer(self, timer) :
         self.timer = timer
 
+    def setholiday(self, holiday) :
+        self.holiday = holiday
+
 #Setzte GPIO Nummerierung auf Broadcom
 #Dauer 1 an  pin21
 
-GPIO.setwarnings(False)
+GPIO.setwarnings(True)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.OUT)
 GPIO.output(21, GPIO.HIGH)
 
 
 pinlock = [False]*28
+
+holiday = {'status' : 'off',
+        'interval' : 0,
+        'running' : False,
+        'timer' : 0}
+
 
 def loadxml(url) :
 
@@ -48,7 +59,8 @@ def loadxml(url) :
     global xml
     global root
     global devs
-    
+    global holiday
+
     xml = et.parse(url)
     root = xml.getroot()
 
@@ -77,7 +89,15 @@ def loadxml(url) :
             timer['off'] = int(timers.find('off').text)
             devs[num].settimer(timer)
 
+
+        devs[num].setholiday(device.find('holiday').text)
+
         num = num + 1
+
+    for holidays in root.findall('holiday') :
+
+        holiday['status'] = holidays.find('status').text
+        holiday['interval'] = float(holidays.find('interval').text)
 
 while True :
 
@@ -85,6 +105,52 @@ while True :
 
     loadxml('/var/www/html/status.xml')
     changed = False
+
+
+    if holiday['status'] == 'off' and holiday['running'] :
+        id = 0
+        for pinl in pinlock:
+            if pinl == True :
+                GPIO.setup(id, GPIO.OUT)
+                GPIO.output(id, GPIO.LOW)
+                pinlock[id]  = False
+            id += 1
+        holiday['running'] = False
+        print('holiday turned off', pinlock)
+
+
+    if holiday['status'] == 'on' and time.time() >= holiday['timer'] :
+
+        id = 0
+        for pinl in pinlock :
+            if pinl == True :
+                GPIO.setup(id, GPIO.OUT)
+                GPIO.output(id, GPIO.LOW)
+                pinl = False
+            id += 1
+
+        shufsel = []
+
+        for dev in devs :
+            if dev.holiday == 'on' :
+                 shufsel.append(dev)
+
+        if shufsel :
+
+            dev = choice(shufsel)
+
+            for pin in dev.signal :
+
+                pin = int(pin)
+                GPIO.setup(pin, GPIO.OUT)
+                GPIO.output(pin, GPIO.HIGH)
+                pinlock[pin] = True
+                #print(pin , 'on')
+
+            holiday['timer'] = time.time() + holiday['interval']
+
+        holiday['running'] = True
+        print('holiday turned on')
 
     for dev in devs :
 
@@ -112,28 +178,29 @@ while True :
                     #nur wenn pinlock für pin nicht gesetzt (pin schon 0)
 
                     GPIO.setup(pin, GPIO.OUT)
-                    GPIO.output(pin, GPIO.LOW)
+                    GPIO.output(pin, GPIO.HIGH)
                     pinlock[pin] = True
 
-        elif dev.status == 'off' :
+        if dev.status == 'off' :
 
             #Schalte in signal bestimmte pins auf 1 wenn off in status
 
             for pin in dev.signal :
 
                 pin = int(pin)
-            
+
                 if pinlock[pin] == True :
-                
+
                     #nur wenn pinlock für pin noch gesetzt
 
                     GPIO.setup(pin, GPIO.OUT)
-                    GPIO.output(pin, GPIO.HIGH)
+                    GPIO.output(pin, GPIO.LOW)
                     pinlock[pin] = False
-        
+
+
     #wenn status geändert wurde speichere in Datei
-    
+
     if changed :
         xml.write('/var/www/html/status.xml', encoding = 'utf-8', xml_declaration = True)
-    
+
     time.sleep(0.2)

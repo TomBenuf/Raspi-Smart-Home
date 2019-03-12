@@ -12,7 +12,7 @@
 
 </head>
 <body>
-	<p> <h1>Ihre Smart-Home Steuerung für unterwegs.</h1> </p>
+	<p><h1>Ihre Smart-Home Steuerung <br> für unterwegs</h1> </p>
 
 <?php
 // Läd XML und erstellt für jedes /devices/device einen Button.

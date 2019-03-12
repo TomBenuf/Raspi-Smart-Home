@@ -7,34 +7,38 @@
 
 body{
 	 background-color:#dcd5ad;
-	 font-size:0.7cm;
+	 font-size:210%;
 	 
 }
 
 h1{
 	 color:#136f91;
-	 font-size:1.1cm;
+	 font-size:150%;
 	 text-decoration:underline;
 }
+a:hover { 
+     background-color: yellow;
+ } 
 
 #button{background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 2% 8%;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
+    font-size: 80%;
 	border-radius: 12px;
+	box-shadow: 3px 3px 15px #a0a0a0;
 }
 
 .switch {
-  margin-top: 5px;
-  left: 100px;
-  position: relative;
+  margin-top: 0.1%;
+  left: 20%;
+  position: fixed;
   display: inline-block;
-  width: 60px;
-  height: 34px;
+  width: 20%;
+  height: 4%;
 }
 
 .switch input { 
@@ -58,10 +62,10 @@ h1{
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
+  height: 75%;
+  width: 11.2%;
+  left: 5%;
+  bottom: 14%;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -69,20 +73,21 @@ h1{
 
 input:checked + .slider {
   background-color: #2196F3;
+  
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0px 0px #2196F3;
 }
 
 input:checked + .slider:before{
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+  -webkit-transform: translateX(500%);
+  -ms-transform: translateX(500%);
+  transform: translateX(500%);
 }
 
 input:disabled + .slider {
-	  background-color: #ccc;
+	  background-color: #e18a23;
 }
 
 .slider.round {
