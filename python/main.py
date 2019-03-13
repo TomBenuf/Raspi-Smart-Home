@@ -10,7 +10,6 @@ import time
 import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
 from random import choice
-from operator import itemgetter
 
 #erstelle Klasse um XML Daten zu Laden
 
@@ -37,7 +36,7 @@ class devices :
 #Setzte GPIO Nummerierung auf Broadcom
 #Dauer 1 an  pin21
 
-GPIO.setwarnings(True)
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.OUT)
 GPIO.output(21, GPIO.HIGH)
@@ -159,10 +158,12 @@ while True :
 
         if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 and dev.status == 'off' :
             exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'on'""")
+            exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('on').text = '0'""")
             changed = True
 
         if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 and dev.status == 'on' :
             exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'off'""")
+            exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('off').text = '0'""")
             changed = True
 
         if dev.status == 'on' :

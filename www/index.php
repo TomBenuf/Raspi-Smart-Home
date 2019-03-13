@@ -45,7 +45,7 @@ if(isset($_POST['submit'])){
 			}
 
 			If(!empty($_POST['fendz'])){
-				$device1->timer->off = strtotime($_POST['fanfz']);
+				$device1->timer->off = strtotime($_POST['fendz']);
 			}
 
 			else{
