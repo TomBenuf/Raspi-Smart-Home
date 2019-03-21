@@ -1,4 +1,4 @@
-/* Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2018-12-10
+/* Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-21
  * Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
  * Dies ist die Haupt CSS-Datei. *
@@ -35,7 +35,7 @@ a:hover {
 .switch {
   margin-top: 0.1%;
   left: 20%;
-  position: fixed;
+  position: absolute;
   display: inline-block;
   width: 20%;
   height: 4%;
@@ -48,7 +48,7 @@ a:hover {
 }
 
 .slider {
-  position: absolute;
+  position:absolute;
   cursor: pointer;
   top: 0;
   left: 0;

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-12
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-21
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
