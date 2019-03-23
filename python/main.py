@@ -99,6 +99,8 @@ def loadxml(url) :
         holiday['status'] = holidays.find('status').text
         holiday['interval'] = float(holidays.find('interval').text)
 
+#DIETER HERRMANN WIR LIEBEN SIE <3 <3 <3
+
 while True :
 
     #Python Hauptprogramm wiederhole für immer
