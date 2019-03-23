@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-21
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-23
    - Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
    - Dies ist die INDEX HTML-Datei. -->
@@ -12,22 +12,24 @@
 
 </head>
 <body>
-	<p><h1>Ihre Smart-Home Steuerung <br> für unterwegs</h1> </p>
+	<p><h1>Ihre Smart-Home Steuerung</h1> </p>
 
 <?php
 
 
-echo "<form action='settings.php' method='POST'>
-		Bitte Passwort eingeben: <input type='password' name='fpassw'><p>
+echo "<table><form action='settings.php' method='POST'>
+		<tr><td>Bitte Passwort eingeben: </td><td><input type='password' name='fpassw'></td></tr>
+		</table><p>
 		<input type='submit' value='Login' id='button'>
 	</form><p>
 
 	<h3>Neues Passwort</h3>
 
-	<form action='' method='POST'>
-		Passwort eingeben: <input type='password' name='fpasswalt'><br>
-		Neues Passwort eingeben: <input type='password' name='fpasswneu1'><br>
-		Neues Passwort wiederholen: <input type='password' name='fpasswneu2'><p>
+	<table><form action='' method='POST'>
+		<tr><td>Passwort eingeben: </td><td><input type='password' name='fpasswalt'></td></tr>
+		<tr><td>Neues Passwort eingeben: </td><td><input type='password' name='fpasswneu1'></td></tr>
+		<tr><td>Neues Passwort wiederholen: </td><td><input type='password' name='fpasswneu2'></td></tr>
+		</table><p>
 		<input type='submit' name='fsubmit' value='OK' id='button'>
 	</form>";
 

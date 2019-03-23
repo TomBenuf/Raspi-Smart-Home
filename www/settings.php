@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-21
+<!-- Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-23
    - Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
    - Dies ist die INDEX HTML-Datei. -->
@@ -12,7 +12,7 @@
 
 </head>
 <body>
-	<p><h1>Ihre Smart-Home Steuerung <br> für unterwegs</h1> </p>
+	<p><h1>Ihre Smart-Home Steuerung</h1> </p>
 
 <?php
 // Läd XML und erstellt für jedes /devices/device einen Button.
@@ -27,11 +27,11 @@ $xml = simplexml_load_file('status.xml');
 
 if(hash('sha256',@$_POST['fpassw']) == $xml->passw){
 
-echo "<form action='' method='POST'>
+echo "<table><form action='' method='POST'>
 	<input type='hidden' name='fpassw' value=".@$_POST['fpassw'].">
-	Einschaltzeit eingeben: <input type='text' name='fanfz'><br>
-	Ausschaltzeit eingeben: <input type='text' name='fendz'></p>
-	<p>";
+	<tr><td>Einschaltzeit eingeben: </td><td><input type='text' name='fanfz'></td></tr>
+	<tr><td>Ausschaltzeit eingeben: </td><td><input type='text' name='fendz'></td></td>
+	</table><p><table>";
 
 if(isset($_POST['submit'])){
 	//echo "Submitted";
@@ -42,22 +42,20 @@ if(isset($_POST['submit'])){
 		$indentvis = "fcheck_vis".$device1['id'];
 
 		If(isset($_POST[$indentvis])){
-			$device1->status = 'on';
 			$device1->holiday = 'on';
 
-			If(!empty($_POST['fanfz'])){
+			if(!empty($_POST['fanfz'])){
+				$device1->status = 'off';
 				$device1->timer->on = strtotime($_POST['fanfz']);
 			}
 
-			else{
-				$device1->timer->on = 0;
-			}
-
-			If(!empty($_POST['fendz'])){
+			elseif(!empty($_POST['fendz'])){
+				$device1->status = 'on';
 				$device1->timer->off = strtotime($_POST['fendz']);
 			}
 
 			else{
+				$device1->status = 'on';
 				$device1->timer->off = 0;
 			}
 		}
@@ -84,15 +82,18 @@ if(isset($_POST['submit'])){
 	$anfz=$_POST['fanfz'];
 	$endz=$_POST['fendz'];
 
-	//Speichert $xml in Datei
+	//Speichert $xml in Datei und erstellt .lock datei während schreibvorgang
+	$lock = fopen('status.lock','w');
+	fclose($lock);
 	file_put_contents('status.xml', $xml->asXML());
+	unlink('status.lock');
 }
 
 //Erzeuge Checkbox für jedes Gerät
 foreach($xml->device as $device){
-	echo $device->name."<label class='switch'><input type='checkbox' name='fcheck_vis".$device['id']."' ";
+	echo "<tr><td>".$device->name."</td><td><label class='switch'><input type='checkbox' name='fcheck_vis".$device['id']."' ";
 
-	If($device->status == 'on'){
+	If($device->status == 'on' and empty($_POST['anfz'])){
 		echo "checked ";
 	}
 	If($xml->holiday->status == 'on'){
@@ -102,18 +103,17 @@ foreach($xml->device as $device){
 	else{
 		echo "><span class='slider round'>";
 	}
-	echo "</label><br>
-		";
+	echo "</label></td></tr>";
 }
 
-echo "Urlaubsmodus <label class='switch'>
+echo "<tr><td>Urlaubsmodus </td><td><label class='switch'>
 	<input type='checkbox' name='holiday' id='holidaychk' ";
 
 if($xml->holiday->status == 'on'){
 	echo "checked";
 }
 
-echo "><span class='slider round'></span></label>
+echo "><span class='slider round'></span></label></td></tr></table>
 	</p><input type='submit' name='submit' value='OK' id='button'></form><p>";
 }
 else echo "Passwort falsch!<p>";

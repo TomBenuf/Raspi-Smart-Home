@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-21
+''' Tom Barnowsky, Nils Rothenburger, Robin Schmidt - 2019-03-23
     Netzwerkgestützte Smart-Home Steuerung via Raspberry Pi
 
     Dies ist der Python3 Backend script.'''
@@ -10,6 +10,7 @@ import time
 import RPi.GPIO as GPIO
 import xml.etree.ElementTree as et
 from random import choice
+from os import path
 
 #erstelle Klasse um XML Daten zu Laden
 
@@ -102,106 +103,107 @@ while True :
 
     #Python Hauptprogramm wiederhole für immer
 
-    loadxml('/var/www/html/status.xml')
-    changed = False
+    exists = path.isfile('/var/www/html/status.lock') 
+    if not exists :
+        loadxml('/var/www/html/status.xml')
+        changed = False
+
+        if holiday['status'] == 'off' and holiday['running'] :
+            id = 0
+            for pinl in pinlock:
+                if pinl == True :
+                    GPIO.setup(id, GPIO.OUT)
+                    GPIO.output(id, GPIO.LOW)
+                    pinlock[id]  = False
+                id += 1
+            holiday['running'] = False
+            print('holiday turned off', pinlock)
 
 
-    if holiday['status'] == 'off' and holiday['running'] :
-        id = 0
-        for pinl in pinlock:
-            if pinl == True :
-                GPIO.setup(id, GPIO.OUT)
-                GPIO.output(id, GPIO.LOW)
-                pinlock[id]  = False
-            id += 1
-        holiday['running'] = False
-        print('holiday turned off', pinlock)
+        if holiday['status'] == 'on' and time.time() >= holiday['timer'] :
 
+            id = 0
+            for pinl in pinlock :
+                if pinl == True :
+                    GPIO.setup(id, GPIO.OUT)
+                    GPIO.output(id, GPIO.LOW)
+                    pinl = False
+                id += 1
 
-    if holiday['status'] == 'on' and time.time() >= holiday['timer'] :
+            shufsel = []
 
-        id = 0
-        for pinl in pinlock :
-            if pinl == True :
-                GPIO.setup(id, GPIO.OUT)
-                GPIO.output(id, GPIO.LOW)
-                pinl = False
-            id += 1
+            for dev in devs :
+                if dev.holiday == 'on' :
+                    shufsel.append(dev)
 
-        shufsel = []
+            if shufsel :
 
-        for dev in devs :
-            if dev.holiday == 'on' :
-                 shufsel.append(dev)
+                dev = choice(shufsel)
 
-        if shufsel :
+                for pin in dev.signal :
 
-            dev = choice(shufsel)
-
-            for pin in dev.signal :
-
-                pin = int(pin)
-                GPIO.setup(pin, GPIO.OUT)
-                GPIO.output(pin, GPIO.HIGH)
-                pinlock[pin] = True
-                #print(pin , 'on')
-
-            holiday['timer'] = time.time() + holiday['interval']
-
-        holiday['running'] = True
-        print('holiday turned on')
-
-    for dev in devs :
-
-        #Setzt den Gerätestatus auf on oder off
-        #wenn die Aktuelle Zeit größer als die in Timer festgelegte und der Timer nicht 0 ist
-
-        if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 and dev.status == 'off' :
-            exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'on'""")
-            exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('on').text = '0'""")
-            changed = True
-
-        if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 and dev.status == 'on' :
-            exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'off'""")
-            exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('off').text = '0'""")
-            changed = True
-
-        if dev.status == 'on' :
-
-            #Schalte in signal bestimmte pins auf ON wenn on in status
-
-            for pin in dev.signal :
-
-                pin = int(pin)
-
-                if pinlock[pin] == False :
-
-                    #nur wenn pinlock für pin nicht gesetzt (pin schon 0)
-
+                    pin = int(pin)
                     GPIO.setup(pin, GPIO.OUT)
                     GPIO.output(pin, GPIO.HIGH)
                     pinlock[pin] = True
+                    #print(pin , 'on')
 
-        if dev.status == 'off' :
+                holiday['timer'] = time.time() + holiday['interval']
 
-            #Schalte in signal bestimmte pins auf 1 wenn off in status
+            holiday['running'] = True
+            #print('holiday turned on')
 
-            for pin in dev.signal :
+        for dev in devs :
 
-                pin = int(pin)
+            #Setzt den Gerätestatus auf on oder off
+            #wenn die Aktuelle Zeit größer als die in Timer festgelegte und der Timer nicht 0 ist
 
-                if pinlock[pin] == True :
+            if time.time() >= dev.timer['on'] and dev.timer['on'] != 0 and dev.status == 'off' :
+                exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'on'""")
+                exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('on').text = '0'""")
+                changed = True
 
-                    #nur wenn pinlock für pin noch gesetzt
+            if time.time() >= dev.timer['off'] and dev.timer['off'] != 0 and dev.status == 'on' :
+                exec("""root.find("./*[@id='""" + dev.id + """']/status").text = 'off'""")
+                exec("""root.find("./*[@id='""" + dev.id + """']/timer").find('off').text = '0'""")
+                changed = True
 
-                    GPIO.setup(pin, GPIO.OUT)
-                    GPIO.output(pin, GPIO.LOW)
-                    pinlock[pin] = False
+            if dev.status == 'on' :
+
+                #Schalte in signal bestimmte pins auf ON wenn on in status
+
+                for pin in dev.signal :
+
+                    pin = int(pin)
+
+                    if pinlock[pin] == False :
+
+                        #nur wenn pinlock für pin nicht gesetzt (pin schon 0)
+
+                        GPIO.setup(pin, GPIO.OUT)
+                        GPIO.output(pin, GPIO.HIGH)
+                        pinlock[pin] = True
+
+            if dev.status == 'off' :
+
+                #Schalte in signal bestimmte pins auf 1 wenn off in status
+
+                for pin in dev.signal :
+
+                    pin = int(pin)
+
+                    if pinlock[pin] == True :
+
+                        #nur wenn pinlock für pin noch gesetzt
+
+                        GPIO.setup(pin, GPIO.OUT)
+                        GPIO.output(pin, GPIO.LOW)
+                        pinlock[pin] = False
 
 
-    #wenn status geändert wurde speichere in Datei
+        #wenn status geändert wurde speichere in Datei
 
-    if changed :
-        xml.write('/var/www/html/status.xml', encoding = 'utf-8', xml_declaration = True)
+        if changed :
+            xml.write('/var/www/html/status.xml', encoding = 'utf-8', xml_declaration = True)
 
-    time.sleep(0.2)
+        time.sleep(0.2)
